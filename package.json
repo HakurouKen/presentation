@@ -1,5 +1,8 @@
 {
   "name": "presentation",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HakurouKen's presentation.",
   "scripts": {
     "publish": "gulp publish",
     "test": "echo \"Error: no test specified\" && exit 1"
