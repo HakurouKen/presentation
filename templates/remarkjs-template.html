@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{TITLE}}</title>
+        <meta charset="utf-8">
+        <style>
+            /* 用中科大的源代替 google 源, 360 的 useso 比 google 还慢 */
+            @import url(//fonts.lug.ustc.edu.cn/css?family=Yanone+Kaffeesatz);
+            @import url(//fonts.lug.ustc.edu.cn/css?family=Droid+Serif:400,700,400italic);
+            @import url(//fonts.lug.ustc.edu.cn/css?family=Ubuntu+Mono:400,700,400italic);
+
+            body { font-family: 'Droid Serif'; }
+            h1, h2, h3 {
+                font-family: 'Yanone Kaffeesatz';
+                font-weight: normal;
+            }
+            .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+        </style>
+    </head>
+    <body>
+        <textarea id="source" style="display:none;">
+
+{{SOURCE}}
+
+        </textarea>
+        <script src="//remarkjs.com/downloads/remark-latest.min.js">
+        </script>
+        <script>
+            var slideshow = remark.create();
+        </script>
+    </body>
+</html>
