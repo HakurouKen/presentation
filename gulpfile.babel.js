@@ -41,8 +41,8 @@ const remarkjsPublish = () => {
             let title = filepath.replace(/\.remark\.md/g,'').split(path.sep).join(' ');
             file.contents = new Buffer(
                 tmpl
-                    .replace('{{TITLE}}',title)
-                    .replace('{{SOURCE}}',markdown)
+                    .replace(/\{\{TITLE\}\}/,title)
+                    .replace(/\{\{SOURCE\}\}/,markdown)
             );
             return callback(null, file);
         }
