@@ -48,7 +48,7 @@ const remarkjsPublish = () => {
 };
 
 
-gulp.task('publish:nodeppt:generate', () => {
+gulp.task('publish:nodeppt', () => {
     // nodeppt 生成的文件引用路径是固定的
     // 因此这里只支持导入 src 一级目录下的文件
     gulp.src('src/*.nodeppt.md')
