@@ -1,0 +1,925 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.2
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Python - By leroyxyli</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Pythonic</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>目录</h1>
+<ol>
+<li>py-intro</li>
+<li>py-spec</li>
+<li>py-trap</li>
+<li>py-trick</li>
+<li>py-efficient</li>
+<li>django</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>入门</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>语法</h2>
+<ul>
+<li>空格/tab 缩进表示代码块(不能混用)</li>
+<li>可选分号(不建议加)</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>常见数据类型</h2>
+<h3>列表(list)</h3>
+<p>数组</p>
+<pre><code class="python"># list can be init by `[]`
+career = [&#39;web developer&#39;,&#39;product manager&#39;,&#39;designer&#39;]
+# push a new element to list.
+career.append(&#39;application developer&#39;)
+print career
+# output: [&#39;web developer&#39;,&#39;product manager&#39;, &#39;designer&#39;, &#39;application developer&#39;]
+career.count()
+# output: 4
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>元组(tuple)</h3>
+<p>不可变</p>
+<pre><code class="python"># tuple
+language = (&#39;php&#39;,&#39;python&#39;,&#39;javascript&#39;,)
+language.count()    # output: 3
+
+# list
+frameworks = [&#39;CodeIgniter&#39;,&#39;Django&#39;,&#39;Express&#39;]
+# list to tuple
+frameworks_tuple = tuple(frameworks)
+# tuple to list
+frameworks_list = list(frameworks)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>集合(set)</h3>
+<p>无重复元素集</p>
+<pre><code class="python">#  set() -&gt; new empty set object
+#  set(iterable) -&gt; new set object
+mobile_system = set([&#39;Android&#39;,&#39;iOS&#39;,&#39;Symbian&#39;,&#39;Windows Mobile&#39;])
+# or
+mobile_system = {&#39;Android&#39;,&#39;iOS&#39;,&#39;Symbian&#39;,&#39;Windows Mobile&#39;}
+# Add an element to set. Do nothing if element is already exists.
+mobile_system.add(&#39;Windows Mobile&#39;)
+# Remove an element from set. Do nothing if element is not exists.
+mobile_system.discard(&#39;Symbian&#39;)
+# Compare two set, return difference.
+mobile_system.difference(set([&#39;Android&#39;,&#39;iOS&#39;]))
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>字典(dict)</h3>
+<p>键值对</p>
+<pre><code class="python">o = {&#39;key&#39;:&#39;value&#39;}
+o[&#39;key2&#39;] = &#39;value2&#39;
+print o[&#39;key&#39;]  # output: value
+print o.get(&#39;key&#39;) # output: value
+# print o[&#39;another_key&#39;]  # will throw a KeyError
+print o.get(&#39;another_key&#39;,&#39;Not Found&#39;)  # output: Not Found
+print o.items()     # output: [(&#39;key2&#39;, &#39;value2&#39;), (&#39;key&#39;, &#39;value&#39;)]
+</code></pre>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>条件</h2>
+<p>if - elif - else</p>
+<pre><code class="python">x = 100
+if x &gt; 100:
+    print &#39;{} is bigger than 100&#39;.format(x)
+elif x &gt; 50:
+    print &#39;{x} is between 50 and 100&#39;.format(x=5)
+else
+    print &#39;{} is smaller than 50&#39;.format(x=5)
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>循环</h2>
+<ul>
+<li>while</li>
+</ul>
+<pre><code class="python">i = 0
+while i &lt; 10:
+    if i % 2:
+        print &#39;{} is an odd&#39;.format(i)
+    else:
+        print &#39;{} is a even&#39;.format(i)
+
+    if i == 5:
+        print &#39;I get bored, just break.&#39;
+        break
+    i += 1
+</code></pre>
+<ul>
+<li>for</li>
+</ul>
+<pre><code class="python">for i in range(0,5):
+    print i
+else:
+    print &#39;Not break.&#39;
+
+languages = [&#39;php&#39;,&#39;python&#39;,&#39;javascript&#39;]
+for language in languages:
+    print languages
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>函数</h2>
+<pre><code class="python">## 函数定义
+def test_func(num1,num2=0,*args,**kwargs):
+    &#39;&#39;&#39;
+        Test how to pass arguments to a function.
+    &#39;&#39;&#39;
+    ret = num1 + num2
+    print &#39;num1 + num2 equals {}&#39;.format(ret)
+    print &#39;received arguments: {}&#39;.format(args)
+    print &#39;received arguments with name: {}&#39;.format(kwargs)
+    return ret
+
+# Test cases
+test_func(1,2)
+test_func(1)
+test_func(1,2,3)
+test_func(num1=0,num2=1)
+test_func(1,2,another_value=3)
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>类</h2>
+<pre><code class="python">class Person(object):
+    def __init__(self,name,age=0):
+        self.name = name
+        self.age = age
+
+    def getOlder(self,num):
+        self.age += num
+
+    @staticmethod
+    def search(persons,name):
+        return filter(lambda person: person.name == name,persons)
+
+# create a person instance
+person_a = Person(&#39;name_a&#39;)
+assert(isinstance(person_a,Person))
+person_b = Person(&#39;name_b&#39;,18)
+Person.search([person_a,person_b],&#39;name_a&#39;)     # return a person list, include only person_a
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>规范</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2><a href="https://www.python.org/dev/peps/pep-0008/" target="_blank">PEP8</a></h2>
+<ul>
+<li>4个空格缩进</li>
+<li>不同功能间的代码块用空行隔开</li>
+<li>文件统一用 utf-8 编码</li>
+<li>import 单行导入</li>
+<li>import 导入顺序<ul>
+<li>python 内部包</li>
+<li>第三方依赖</li>
+<li>项目内部依赖</li>
+</ul>
+</li>
+<li>不需要多余的空格</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>import this</h2>
+<pre>
+    The Zen of Python, by Tim Peters
+
+    Beautiful is better than ugly.
+    Explicit is better than implicit.
+    Simple is better than complex.
+    Complex is better than complicated.
+    Flat is better than nested.
+    Sparse is better than dense.
+    Readability counts.
+    Special cases aren't special enough to break the rules.
+    Although practicality beats purity.
+    Errors should never pass silently.
+    Unless explicitly silenced.
+    In the face of ambiguity, refuse the temptation to guess.
+    There should be one-- and preferably only one --obvious way to do it.
+    Although that way may not be obvious at first unless you're Dutch.
+    Now is better than never.
+    Although never is often better than *right* now.
+    If the implementation is hard to explain, it's a bad idea.
+    If the implementation is easy to explain, it may be a good idea.
+    Namespaces are one honking great idea -- let's do more of those!
+</pre>
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre>
+    Python 之禅 , by Tim Peters
+
+    美丽比丑陋更好,直白比晦涩更好.
+    简介为上,复杂次之,凌乱更次.
+    扁平优于嵌套，间隔优于紧凑.
+    可读性十分重要.
+    即使借实用性之名，也没有什么特例可以打破这些规则.
+    除非确定，否则不要静默处理错误.
+    当你面临歧义的时候，不要尝试去猜测，而是去寻找一种 -- 最好是唯一一种 -- 明显的解决方案.
+    但是这并不容易，因为你不是 Dutch (注:python 之父).
+    做比不做好，但马上去做有时还不如不做。
+    如果一个实现难以解释，它一定是一个坏的实现，反之，则有可能是一个好的实现.
+    命名空间是一个优秀的理念，我们应该多加实践.
+</pre>
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>python 使用注意点</h1>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>python 2/3</h2>
+<ul>
+<li>python3 不向下兼容 python2</li>
+<li>python3 对 python2 的一些内容做了规范化，填了一些坑</li>
+<li>现在 2 升级 3 工具基本可以覆盖</li>
+</ul>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>GIL(Global Interpreter Lock)</h2>
+<ul>
+<li>CPython 中全局排它锁</li>
+<li>多线程计算中，无法很好利用多核</li>
+<li>在 Python3(CPython) 中，已经修改了 GIL 实现，但引入了 NewGIL 机制</li>
+<li>并不是 Python 本身的机制，在 pypy 和 Jython 中不受限制</li>
+</ul>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>编码</h2>
+<ul>
+<li><code>#coding: utf-8</code></li>
+<li>影响文件运行的注释</li>
+</ul>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>字符串两种字符串(str,unicode)类型</h2>
+<ul>
+<li>建议全部字符串采用 utf-8</li>
+<li>encode/decode</li>
+<li>判断是否为字符串 <code>isinstance(custom_str,basestring)</code></li>
+</ul>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>trick</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>help / dir / docstring</h2>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>装饰器</h2>
+<p>语法糖，类似于 <code>func = decorator(func)</code></p>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p>用函数声明</p>
+<pre><code class="python">from functools import wraps
+
+def hello(fn):
+    @wraps(fn)
+    def wrapper(*args,**kwargs):
+        return &#39;hello &#39; + fn(*args,**kwargs)
+    return wrapper
+
+@hello
+def get_name(firstname,lastname):
+    return firstname + &#39; &#39; + lastname
+
+name = get_name(&#39;John&#39;,&#39;Smith&#39;)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p>用类声明：</p>
+<pre><code class="python">class hello(object):
+
+    def __init__(self, fn):
+        self.fn = fn
+
+    def __call__(self,*args,**kwargs):
+        return &#39;hello &#39; + self.fn(*args,**kwargs)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>装饰器</h2>
+<p>用装饰器做缓存</p>
+<pre><code class="python">from functools import wraps
+def memo(fn):
+    cache = {}
+    miss = object()
+
+    @wraps(fn)
+    def wrapper(*args):
+        result = cache.get(args, miss)
+        if result is miss:
+            result = fn(*args)
+            cache[args] = result
+        return result
+
+    return wrapper
+
+@memo
+def fib(n):
+    if n &lt; 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+</code></pre>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>itertools, functools</h2>
+<ul>
+<li><a href="https://docs.python.org/2/library/itertools.html" target="_blank">itertools</a></li>
+<li><a href="https://docs.python.org/2/library/functools.html" target="_blank">functools</a></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>列表推导</h2>
+<pre><code class="python">result = [num+1 for num in [1,2,3]]
+# equals to
+result = []
+for num in [1,2,3]:
+    result.append(num+1)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre><code class="python">result = [(x, y) for x in [1,2,3] for y in [1,2,3] if x != y]
+# equals to
+result = []
+for x in [1,2,3]:
+    for y in [1,2,3]:
+        if x != y:
+            result.append((x,y))
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p>字典推导</p>
+<pre><code class="python">d = { x: x % 2 == 0 for x in range(1, 11) }
+</code></pre>
+<p>构造生成器</p>
+<pre><code class="python">result = (num*2 for num in [1,2,3,4,5])
+</code></pre>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2><a href="http://pyzh.readthedocs.io/en/latest/python-magic-methods-guide.html" target="_blank">魔术方法(magic methods)</a></h2>
+<pre><code class="python">class Closer:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __enter__(self, obj):
+        return self.obj
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        try:
+            self.obj.close()
+        except AttributeError:
+            print &#39;Not closable.&#39;
+            return True
+
+from ftplib import FTP
+with Closer(FTP(&#39;ftp.somesite.com&#39;)) as conn:
+    conn.dir()
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p>magic method 有很多，例如：</p>
+<ul>
+<li>__init__</li>
+<li>__new__</li>
+<li>__del__</li>
+<li>__eq__</li>
+<li>__add__</li>
+<li>__import__</li>
+<li>...</li>
+</ul>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>迭代器/生成器</h2>
+<ul>
+<li>iter函数：返回一个定义了next()方法的迭代器对象</li>
+<li>next函数：获取下一个元素，在没有后续元素时，抛出一个StopIteration异常。</li>
+</ul>
+<pre><code class="python">alphabet = [&#39;a&#39;,&#39;b&#39;,&#39;c&#39;]
+i = iter(alphabet)
+next(i) # &#39;a&#39;
+next(i) # &#39;b&#39;
+next(i) # &#39;c&#39;
+next(i) # StopIteration
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre><code class="python">class Fib(object):
+    def __init__(self, max):
+        super(Fib, self).__init__()
+        self.max = max
+
+    def __iter__(self):
+        self.a = 0
+        self.b = 1
+        return self
+
+    def __next__(self):
+        fib = self.a
+        if fib &gt; self.max:
+            raise StopIteration
+        self.a, self.b = self.b, self.a + self.b
+        return fib
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p>yield: 生成器</p>
+<pre><code class="python">def fibGenerator(end):
+    first = 0
+    second = 1
+    for i in xrange(0,end):
+        first,second = second, first + second
+        yield first
+</code></pre>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>metaclass</h2>
+<ol>
+<li>类也是对象</li>
+<li>元类是动态生成类的类</li>
+<li>type 与 __metaclass__</li>
+<li>黑魔法，尽量不使用</li>
+</ol>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>type</h3>
+<p>type 的两种用法：</p>
+<ol>
+<li><code>type(object)</code> : 返回 object 对象对应的类</li>
+<li><code>type(className,father_tuple,prop_dict)</code> : 返回一个类名为 className, 父类为 father_tuple，包含 prop_dict 中的属性的类</li>
+</ol>
+<pre><code class="python"># Usually, we use type(object)
+assert(type(&#39;abc&#39;) is str)
+assert(type(1) is int)
+# we can also use type to create a new class
+Foo = type(&#39;Foo&#39;, (), {&#39;bar&#39;:True})
+# almost equals to
+class Foo(object):
+    bar = True
+# the class can be extend
+FooChild = type(&#39;FooChild&#39;, (Foo,),{})
+# you can also add methods
+def echo(self):
+    print self.bar
+
+FooChild = type(&#39;FooChild&#39;, (Foo,), {&#39;echo&#39;: echo})
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>__metaclass__</h3>
+<pre><code class="python">class UpperAttrMetaclass(type):
+    def __new__(cls, name, bases, dct):
+        attrs = ((name, value) for name, value in dct.items() if not name.startswith(&#39;__&#39;))
+        uppercase_attr = dict((name.upper(), value) for name, value in attrs)
+        return super(UpperAttrMetaclass, cls).__new__(cls, name, bases, uppercase_attr)
+
+class Test(object):
+    __metaclass__ = UpperAttrMetaclass
+
+    test_prop = []
+    __test_inner_prop = []
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>实例: 用元类创建一个简单的 ORM 模型</h3>
+<pre><code class="python">class ModelMetaclass(type):
+    def __new__(cls, name, bases, dct):
+        if name==&#39;Model&#39;:
+            return type.__new__(cls, name, bases, dct)
+        mappings = dict()
+        for k, v in dct.iteritems():
+            if isinstance(v, Field):
+                mappings[k] = v
+        for k in mappings.iterkeys():
+            dct.pop(k)
+        dct[&#39;__table__&#39;] = name # assume the table name is the same as table name
+        dct[&#39;__mappings__&#39;] = mappings
+        return type.__new__(cls, name, bases, dct)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre><code class="python">class Model(dict):
+    __metaclass__ = ModelMetaclass
+
+    def __init__(self, **kw):
+        super(Model, self).__init__(**kw)
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError as e:
+            raise AttributeError(r&quot;&#39;Model&#39; object has no attribute &#39;%s&#39;&quot; % key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def save(self):
+        fields = []
+        params = []
+        args = []
+        for k, v in self.__mappings__.iteritems():
+            fields.append(v.name)
+            params.append(&#39;?&#39;)
+            args.append(getattr(self, k, None))
+        sql = &#39;insert into %s (%s) values (%s)&#39; % (self.__table__, &#39;,&#39;.join(fields), &#39;,&#39;.join(params))
+        print(&#39;prepare statement: %s&#39; % sql)
+        print(&#39;arguments: %s&#39; % str(args))
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre><code class="python">class Field(object):
+    def __init__(self, name, column_type):
+        self.name = name
+        self.column_type = column_type
+
+class StringField(Field):
+    def __init__(self, name):
+        super(StringField, self).__init__(name, &#39;varchar(127)&#39;)
+
+class IntegerField(Field):
+    def __init__(self, name):
+        super(IntegerField, self).__init__(name, &#39;bigint&#39;)
+</code></pre>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<pre><code class="python">class User(Model):
+    id_ = IntegerField(&#39;id&#39;)
+    name = StringField(&#39;username&#39;)
+    password = StringField(&#39;password&#39;)
+
+# create an object：
+u = User(id_=0, name=&#39;leroyxyli&#39;, password=&#39;password&#39;)
+# call method
+u.save()
+</code></pre>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>effective</h1>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>pip/virtualenv/virtualenvwrapper</h2>
+<ul>
+<li>pip 包管理</li>
+<li>virtualenv 环境隔离</li>
+<li>virtualenvwrapper 方便的操作 virtualenv</li>
+</ul>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>环境管理</h3>
+<p><code>mkvirtualenv</code>    创建新的虚拟环境</p>
+<p><code>mktmpenv</code>    创建新的临时虚拟环境（在deactive时会被销毁）</p>
+<p><code>lsvirtualenv</code>    列出所有的虚拟环境</p>
+<p><code>showvirtualenv</code>    显示单个虚拟环境的详细信息</p>
+<p><code>rmvirtualenv</code>    删除某个虚拟环境</p>
+<p><code>cpvirtualenv</code>    拷贝某个虚拟环境</p>
+<p><code>allvirtualenv</code>    在所有的虚拟环境下执行命令</p>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem far-next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>操作当前环境</h3>
+<p><code>workon</code>    改变当前环境或列出环境</p>
+<p><code>deactive</code>    退出当前虚拟环境</p>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem "  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h3>路径</h3>
+<p><code>cdvirtualenv</code>    切换到指定的虚拟环境目录</p>
+<p><code>cdsitepackages</code>    切换当前虚拟环境到不同的 site-packages 路径</p>
+<p><code>lssitepackages</code>    列出当前虚拟环境的 site-packages 路径下的内容</p>
+<p>详细参考官方文档：<a href="http://virtualenvwrapper.readthedocs.org/en/latest/command_ref.html" target="_blank">http://virtualenvwrapper.readthedocs.org/en/latest/command_ref.html</a></p>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>ipython</h2>
+<ul class="fadeIn">
+<li>A powerful interactive shell.</li>
+<li>A kernel for Jupyter.</li>
+<li>Support for interactive data visualization and use of GUI toolkits.</li>
+<li>Flexible, embeddable interpreters to load into your own projects.</li>
+<li>Easy to use, high performance tools for parallel computing.</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"   data-on-build="Slide.magic" data-on-enter="Slide.magic.init"><section class="slide-wrapper"><div class="magic"><div class="magicItem current pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<h2>pypy/jython/cython</h2>
+<ul>
+<li><p>CPython: 默认，最广泛使用的 python</p>
+</li>
+<li><p>pypy: 用 RPython 的 Python 实现 (有JIT)</p>
+</li>
+<li><p>jython： Java 的 Python 实现 (有JIT)</p>
+</li>
+<li><p>cython: 用 Python 语法写 C 插件</p>
+</li>
+</ul>
+
+</article>
+</div>
+</article></div>
+<div class="magicItem next pagedown"  data-transition="move"><article>
+<div class="magic-wrapper">
+<article>
+<p><img src="http://i68.tinypic.com/2wn0kyd.jpg" alt="How Fast is Pypy">
+<a href="http://speed.pypy.org/" target="_blank">speedtest of pypy</a>
+<a href="http://speed.pypy.org/timeline/#/?exe=3,6,1,5&amp;base=2+472&amp;ben=grid&amp;env=1&amp;revs=10&amp;equid=off" target="_blank">测试结果</a></p>
+
+</article>
+</div>
+</article></div></div></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>django</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>HttpReqeust,HttpResponse,Model</h2>
+<ul class="fadeIn">
+<li><p>HttpRequest</p>
+</li>
+<li><p>HttpResponse</p>
+<blockquote>
+<p>When a page is requested, Django creates an HttpRequest object that contains metadata about the request. Then Django loads the appropriate view, passing the HttpRequest as the first argument to the view function. Each view is responsible for returning an HttpResponse object.</p>
+</blockquote>
+</li>
+<li><p>Model</p>
+<p>  django 操作数据库的模型</p>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>中间件: 轻量级 plugin</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Thanks.</h1>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.2</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'zoomout',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+<link rel="stylesheet" href="./css/theme.moon.css">
+
+<!--placeholder-->
+</body>
+</html>
