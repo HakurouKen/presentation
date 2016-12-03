@@ -8,9 +8,7 @@ import rename from 'gulp-rename';
 import through from 'through2';
 
 // nodeppt 还没有 javascript Api, 这里直接使用内部库
-// nodeppt 内部用到了 `colors`, 但在 generate 文件中没有引入, 这里手工引入一下
-import 'colors';
-import generate from 'nodeppt/lib/generate';
+import nodeppt from 'nodeppt/lib/nodePPT';
 
 const nodepptPublish = (dest,isAll=true) => {
     return through.obj(function(file, encoding, callback) {
@@ -19,7 +17,7 @@ const nodepptPublish = (dest,isAll=true) => {
         // 这样会导致这里得到多个输出，这里直接 hack 掉 console
         let _console = global.console.log;
         global.console.log = function(){};
-        generate(filepath, dest, !!isAll);
+        nodeppt.generate(filepath, dest, !!isAll);
         // 只有第一个文件需要 release-all 剩下的复用即可
         isAll = false;
         global.console.log = _console;
@@ -50,7 +48,9 @@ const remarkjsPublish = () => {
 };
 
 
-gulp.task('publish:nodeppt', () => {
+gulp.task('publish:nodeppt:generate', () => {
+    // nodeppt 生成的文件引用路径是固定的
+    // 因此这里只支持导入 src 一级目录下的文件
     gulp.src('src/*.nodeppt.md')
         .pipe(nodepptPublish('publish/nodeppt'));
 });
