@@ -1,0 +1,369 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.2
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>django 针对新管理端的相关优化 - By leroyxyli</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>django 针对新管理端的相关优化</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>目录</h2>
+<ul>
+<li>render_json / render_template 装饰器</li>
+<li>url 自动加载</li>
+<li>中间件</li>
+<li>get_params 获取参数</li>
+<li>脚手架</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>1. render_json / render_template 装饰器</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>Before：</h3>
+<pre><code class="python">def view_func(request):
+    try:
+        # do some logic stuff
+        some_condition = &#39;&#39;
+        data = {}
+    except Exception as e:
+        # 1. write some log...
+        # logger.error(str(traceback.format_exc()),&#39;some_filename&#39;)
+        # 2. do some database rollback
+        # ...
+        return JsonResponse({
+            &#39;result&#39;: False,
+            &#39;msg&#39;: &#39;Error happend.&#39;
+        })
+
+    if some_condition == &#39;success with data&#39;:
+        # report
+        return JsonResponse({
+            &#39;result&#39;: True,
+            &#39;data&#39;: data
+        })
+    elif some_condition == &#39;some known error&#39;:
+        # do some monitor report staff
+        # with lots of code
+        return JsonResponse({
+            &#39;result&#39;: False,
+            &#39;msg&#39;: &#39;Some error happend...&#39;
+        })
+    else:
+        # write custom log...
+        return JsonResponse({
+            &#39;result&#39;: False,
+            &#39;msg&#39;: &#39;I don\&#39;t know what happend.&#39;
+        })
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>Now:</h3>
+<pre><code class="python">@render_json
+def view_func(request):
+    # do some logic staff
+    some_condition = &#39;&#39;
+    data = {}
+
+    if some_condition == &#39;success with data&#39;:
+        return data
+    elif some_condition == &#39;some known error&#39;:
+        # report automatically
+        raise Error(ERROR_CODE.CURRENT_ERROR_CODE,&#39;Some error happend&#39;)
+    else:
+        # write custom log...
+        raise Error(msg=&#39;I don\&#39;t know what happend.&#39;)
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>核心代码</h3>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<pre><code class="python">def render_json(func):
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        try:
+            response = func(request, *args, **kwargs)
+        except Error as e:
+            # 业务抛出的自定义异常统一为 Error 类型
+            response = {
+                &#39;result&#39;: False,
+                &#39;code&#39;: e.code,
+                &#39;msg&#39;: e.msg
+            }
+        except Exception as e:
+            err_type,err_value,err_traceback = sys.exc_info()
+            # 日志信息
+            logger.error((err_type,err_value,err_traceback,))
+            raise err_type,err_value,err_traceback.tb_next
+
+        if isinstance(response,basestring):
+            response = {
+                &#39;result&#39;: True,
+                &#39;msg&#39;: response
+            }
+        elif not isinstance(response,dict) or not response.has_key(&#39;result&#39;):
+            response = {
+                &#39;result&#39;: True,
+                &#39;data&#39;: response
+            }
+
+        return  JsonResponse(response)
+
+    return wrapper
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>用装饰器实现的好处：</h3>
+<ul>
+<li>节省代码</li>
+<li>view 复用时，可以不修改业务代码</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>2. url 自动加载</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>Before:</h3>
+<pre><code class="python">## 入口 urls.py
+
+urlpatterns = [
+    url(r&#39;^/app/&#39;,include(&#39;app.urls&#39;)),
+]
+
+## 具体页面 urls.py
+from . import views
+urlpatterns = [
+    url(r&#39;^viewFunc/$&#39;,views.view_func)
+]
+
+## views
+@render_json
+def view_func(request):
+    return {}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>Now:</h3>
+<pre><code class="python">## views.py
+@render_json
+def view_func(request):
+    return {}
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>核心逻辑</h3>
+<ol>
+<li>遍历当前根文件夹，获取所有 python 包 (判断是否有 <code>__init__.py</code> )</li>
+<li>如果有 <code>urls.py</code> 文件, 直接 include, 结束</li>
+<li>如果没有 <code>urls.py</code> 遍历所有 <code>views.py</code> 结尾的文件，导出列表</li>
+<li>遍历所有 views , 根据特定规则 ( 被<code>render / render_json / render_template</code>装饰 )导入函数, 根据函数名自动构建路由( 使用 <code>inspect</code> 和 <code>__import__</code> )</li>
+<li>import 过程中出错，则构建一个抛出错误的 view, 匹配所有上一级的路由, 加入路由队尾</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>优点</h3>
+<ul>
+<li>利用固定规则，减少配置项</li>
+<li>import 出错时，只在指定的 urls 抛出错误，不影响已有 views</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>缺点</h3>
+<ul>
+<li>需要引入一些潜规则 (views.py,urls.py)</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>3. tof/monitor 中间件</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>中间件代码</h3>
+<pre><code class="python">class Middleware(object):
+    def process_request(self,request):
+        request.MONITOR = monitor.Monitor(request)
+        return None
+
+    def process_response(self, request, response):
+        code = getattr(response,&#39;CODE&#39;,response.status_code)
+        # do something with code
+        request.MONITOR.p_stop(code)
+        return response
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>优点</h3>
+<ul>
+<li>全局接入，无需修改业务代码</li>
+<li>节省代码</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>4. 用 get_params 获取请求参数</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<pre><code class="python">params = utils.get_params(request.GET,{
+    &#39;id&#39;: Params.IntField(u&#39;id&#39;,null=True,default=0),
+    &#39;name&#39;: [&#39;string&#39;,&#39;&#39;],
+    &#39;uid&#39;: [&#39;number&#39;]
+})
+
+tbUser.objects.create(**params)
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>核心代码</h3>
+<pre><code class="python">_cls = {
+    &#39;string&#39;: StrField,
+    &#39;number&#39;: IntField,
+    &#39;date&#39;: DateField,
+    &#39;datetime&#39;: DatetimeField,
+    &#39;url&#39;: UrlField
+}
+
+def get(data, params):
+    ret = {}
+    for key,value in params.items():
+        if isinstance(value,(list,tuple)):
+            type_name = value[0]
+            default = value[1] if len(value) &gt; 1 else None
+            type_ = _cls.get(type_name,None)
+            if not type_:
+                raise TypeError(&#39;Unsupported validator type {}&#39;.format(type_name))
+            validator = type_(default=default)
+        elif isinstance(value,Field):
+            validator = value
+        else:
+            raise TypeError(&#39;Unsupported item type, must be a list/tuple or a Field instance&#39;)
+
+        ret[key] = validator.parse(data.get(key))
+
+    return ret
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>5. 脚手架</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<pre><code>node create appName pageName
+</code></pre><ol>
+<li><p>根据模板自动创建文件，并根据 appName 和 pageName 完成基本变量替换</p>
+<ul>
+<li>mako 模板文件</li>
+<li>js</li>
+<li>后台 views 文件</li>
+<li>url 路由和 app 相关载入交由框架自动加载</li>
+</ul>
+</li>
+<li><p>如果整个 app 不存在，模拟 <code>python manage.py appName</code></p>
+</li>
+</ol>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.2</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'slide',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+
+
+<!--placeholder-->
+</body>
+</html>

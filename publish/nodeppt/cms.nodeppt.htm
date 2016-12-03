@@ -1,0 +1,308 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.2
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用 angular + django 搭建 CMS - By leroyxyli</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>用 angular + django 搭建 CMS</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>目录</h1>
+<ol>
+<li>为什么要做新管理端</li>
+<li>新管理端技术选型</li>
+<li>angular 简介</li>
+<li>django 简介</li>
+<li>新管理端项目搭建</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>为什么要做新管理端</h1>
+<ol>
+<li>原系统不稳定，而且无法掌控</li>
+<li>原系统 DB 操作不透明</li>
+<li>原系统开发测试步骤繁琐</li>
+<li>提供的各种库版本太老</li>
+<li>抛弃历史包袱</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>新管理端技术选型</h1>
+<h2>CMS系统特征：</h2>
+<ul>
+<li>增删查改</li>
+<li>大量表单和表格</li>
+<li>数据驱动</li>
+<li>功能相对单一</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>前端为什么选用 angular</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 jQuery + kendo</h2>
+<h2>（原框架解决方案）</h2>
+<ol>
+<li>表格交互、表单验证需要大量DOM操作，过于繁琐</li>
+<li>kendo 配置复杂，而且小 bug 多</li>
+<li>kendo 的定制较麻烦</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 django-admin</h2>
+<p>管理段定制化要求非常高（例如复杂交互、多表联合查询）
+用 django-admin 中几乎所有模块都要重写</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 react</h2>
+<ol>
+<li>组件化的思想和 CMS 管理系统理念不一致 （比起库更需要框架）</li>
+<li>组件可复用性不高</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 backbones</h2>
+<p>太轻量，只包含数据控制，模板等解决方案还需依赖其他库</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 vue.js</h2>
+<p>目前社区插件太少，大量的组件需要自己封装，人力不足以支持</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不采用 extjs</h2>
+<ol>
+<li>过于重量级 要完全按照自己的规则</li>
+<li>收费限制了社区发展</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么不用 angular2</h2>
+<ol>
+<li>还是 beta 版，可能会有很多API变更</li>
+<li>没有第三方组件支持</li>
+<li>社区不活跃</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>angular 的优劣势</h2>
+<h3>优势</h3>
+<ol>
+<li>模板功能强大丰富，自带的 ng 指令很强大</li>
+<li>功能完善：模板、数据双向绑定、模块化、服务、路由</li>
+<li>directive 可以灵活自定义 dom 节点</li>
+</ol>
+<h2>劣势</h2>
+<ol>
+<li>对 IE 兼容不好</li>
+<li>相对轻量级组件和库，需要一定学习成本</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>后端为什么选择 django</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么选用 django</h2>
+<ol>
+<li>框架集成度高 orm views template ( 对比 flask/bottle 等轻量框架 )</li>
+<li>开发效率高，编码量小</li>
+<li>插件多</li>
+<li>我们的历史项目中有部分公共组件可以移植</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>angular 简介</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>启动</h2>
+<ul>
+<li><code>angular.bootstrap</code></li>
+<li>dom 上添加 <code>ng-app=&quot;appName&quot;</code> 属性</li>
+</ul>
+<h2>数据绑定</h2>
+<p><a href="https://jsbin.com/raxebin/edit?html,output" target="_blank"> 演示 </a></p>
+<ul>
+<li>有 <code>ng-bind</code> 和 <code>{{}}</code> 两种方式</li>
+<li>数据双向绑定</li>
+<li>模板和变量更新为 angular 自动完成，无须手动调用代码 (脏检查)</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>模块</h2>
+<p><a href="https://jsbin.com/zisire/edit?html,output" target="_blank"> 演示 </a></p>
+<ul>
+<li><p><code>angular.module</code></p>
+</li>
+<li><p>初始化时需要传入 模块名 + 依赖模块 列表(或空数组)</p>
+</li>
+<li><p>再次调用时只需要模块名</p>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>控制器 ( controller )</h2>
+<p><a href="https://jsbin.com/yuziwo/edit?html,output" target="_blank"> 演示 </a></p>
+<ul>
+<li><p>划分作用域</p>
+</li>
+<li><p>作用域可嵌套，子作用域可以调用父作用域的变量</p>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>过滤器 ( filter )</h2>
+<p><a href="https://jsbin.com/guvaxul/edit?html,output" target="_blank"> 演示 </a></p>
+<ul>
+<li><p>格式化输出的函数</p>
+</li>
+<li><p>只影响 html 模板中的显示，不影响属性值本身</p>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>服务 ( service )</h2>
+<p><a href="https://jsbin.com/bamojo/1/edit?html,js,output" target="_blank"> 演示 </a></p>
+<ul>
+<li><p>单例、依赖注入的共享代码块</p>
+</li>
+<li><p><code>constant</code> <code>value</code> <code>factory</code> <code>service</code> <code>provider</code></p>
+</li>
+<li><p>angular 内置了很多服务 例如 <code>$http</code>,<code>$timeout</code>, <code>$location</code></p>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>指令 ( directive )</h2>
+<p><a href="https://jsbin.com/kuwega/edit?html,js,output" target="_blank"> 演示 </a></p>
+<ul>
+<li>DOM 元素上的标记 / 自定义 DOM 元素，改变 DOM 行为</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>事件 ( event )</h2>
+<p><a href="https://jsbin.com/jiwiri/2/edit?html,js,output" target="_blank"> 演示 </a></p>
+<ul>
+<li>广播 <code>$broadcast</code> 发送 <code>$emit</code> 接收 <code>$on</code></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>django 简介</h1>
+<h2>详见项目</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>新管理端搭建</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Thanks.</h2>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.2</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'slide',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+
+
+<!--placeholder-->
+</body>
+</html>

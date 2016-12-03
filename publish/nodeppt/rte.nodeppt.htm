@@ -1,0 +1,527 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.2
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>富文本编辑器分享 - By leroyxyli</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>富文本编辑器</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>目录</h1>
+<ol>
+<li>定义</li>
+<li>现有编辑器对比</li>
+<li>基本原理和API</li>
+<li>坑</li>
+<li>XSS/BBCODE</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>定义</h1>
+<h2>RTE(Rich Text Editor)</h2>
+<h2>内嵌于浏览器</h2>
+<h2>所见即所得(WYSIWYG)</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>现有编辑器对比</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>编辑代码类</h1>
+<h2>codemirror/ace-editor</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>编辑类（WYSIWYG）</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">编辑器</th>
+<th style="text-align:left">大小</th>
+<th style="text-align:left">优点</th>
+<th style="text-align:left">缺点</th>
+<th style="text-align:left">采用公司</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ckeditor(fckeditor)</td>
+<td style="text-align:left">500k(不含插件)</td>
+<td style="text-align:left">插件多,功能大而全，社区活跃</td>
+<td style="text-align:left">大</td>
+<td style="text-align:left">IBM/Adobe/Oracle</td>
+</tr>
+<tr>
+<td style="text-align:left">quill</td>
+<td style="text-align:left">120k</td>
+<td style="text-align:left">体积小，有一定的移动端支持</td>
+<td style="text-align:left">比较新、社区不活跃</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left">tinymce</td>
+<td style="text-align:left">357k(573k)</td>
+<td style="text-align:left">插件多，功能全，社区活跃</td>
+<td style="text-align:left">普通模式是LGPL/高级功能是商业协议</td>
+<td style="text-align:left">evernote/linkedin</td>
+</tr>
+<tr>
+<td style="text-align:left">ueditor</td>
+<td style="text-align:left">350k</td>
+<td style="text-align:left">可定制</td>
+<td style="text-align:left">坑比较多、丑</td>
+<td style="text-align:left">百度</td>
+</tr>
+<tr>
+<td style="text-align:left">umeditor</td>
+<td style="text-align:left">137k</td>
+<td style="text-align:left">插件开发方便，社区活跃</td>
+<td style="text-align:left">同上</td>
+<td style="text-align:left">百度、手游宝PC版</td>
+</tr>
+<tr>
+<td style="text-align:left">kindEditor</td>
+<td style="text-align:left">160k</td>
+<td style="text-align:left">体积较小</td>
+<td style="text-align:left">表格支持有一定缺陷</td>
+<td style="text-align:left">paipai/有道/土豆</td>
+</tr>
+<tr>
+<td style="text-align:left">VEditor/QREditor</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">内部组件</td>
+</tr>
+</tbody>
+</table>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>不建议自己造轮子，坑比较多</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>基本原理和API</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>对某元素启用编辑模式</h2>
+<h2>用 iframe 或 dom 元素作为container</h2>
+<h3>HTMLElement.contentEditable() / Document.designmode()</h3>
+<p><br></p>
+<h4>javascript</h4>
+<pre><code class="javascript">element.contentEditable = true;
+document.designmode = &#39;on&#39;;
+</code></pre>
+<p><br></p>
+<h4>html</h4>
+<p><br></p>
+<pre><code class="html">&lt;div id=&quot;editor-container&quot; contentEditable=&quot;true&quot;&gt;&lt;/div&gt;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>基本指令</h2>
+<h3>Document.execCommand()</h3>
+<pre><code class="javascript">/**
+ * 操作编辑区域的内容
+ * @param String aCommandName 命令名称
+ * @param Boolean aShowDefaultUI 是否显示默认UI，gecko中不支持，IE支持，默认为false
+ * @param String value 额外的参数值(如insertimage需要提供这个image的url),默认为null
+ */
+bool = document.execCommand(aCommandName, aShowDefaultUI, aValueArgument)
+</code></pre>
+<p>示例：</p>
+<pre><code class="javascript">document.execCommand(&#39;bold&#39;); // 加粗
+document.execCommand(&#39;italic&#39;); // 倾斜
+document.execCommand(&#39;underline&#39;); // 下划线
+document.execCommand(&#39;strikeThrough&#39;); // 删除线
+document.execCommand(&#39;createLink&#39;, true, &#39;http://qt.qq.com&#39;); // 为所选文字加链接
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul>
+<li>支持Command参数 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand" title="execCommand" target="_blank">(详见MDN)</a><ul>
+<li>backColor ( 背景颜色 )</li>
+<li>bold ( 加粗 )</li>
+<li>contentReadOnly ( 只读 )</li>
+<li>copy ( 复制到剪切板 )</li>
+<li>createLink ( 创建链接 )</li>
+<li>cut ( 剪切 )</li>
+<li>insert ( 插入 )</li>
+<li>insertHTML ( 插入HTML )</li>
+<li>insertImage ( 插入图片 )</li>
+<li>indent ( 缩进 )</li>
+<li>delete ( 删除 )</li>
+<li>fontSize ( 字体大小 )</li>
+<li>selectAll ( 全选 )</li>
+<li>styleWithCss (采用CSS控制样式)</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>Document.queryCommandState()</h3>
+<h3>查询在当前选中区域中，命令是否被执行</h3>
+<pre><code class="javascript">/**
+ * 操作编辑区域的内容
+ * @param String command 命令名称
+ */
+bool = document.queryCommandState(command)
+</code></pre>
+<p>示例:</p>
+<pre><code class="javascript">document.queryCommandState(&#39;bold&#39;); // 加粗
+document.queryCommandState(&#39;italic&#39;); // 倾斜
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Selection/Range</h2>
+<h3>所选区域 / 文本区域</h3>
+<p><strong> IE 和 W3C 标准不一致，仅以W3C规范为例 </strong></p>
+<pre><code class="javascript">var selection = window.getSelection(), // var section = document.getSelection();
+        selectedRange = selection.getRangeAt(0),
+        newRange = document.createRange();
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Range对象 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Range" title="Range" target="_blank">(详见MDN)</a></h2>
+<ul>
+<li><p>属性</p>
+<ul>
+<li>collasped ( Range起点和终点是否一致 )</li>
+<li>startContainer ( Range开始的DOM元素 )</li>
+<li>endContainer ( Range结束的DOM元素 )</li>
+<li>commonAncestorContainer ( 包含该Range的最深层元素 )</li>
+<li>startOffset ( Range起点在startContainer中的偏移量 )</li>
+<li>endOffset ( Range起点在endContainer中的偏移量 )</li>
+</ul>
+</li>
+<li><p>方法</p>
+<ul>
+<li>setStart() / setEnd()</li>
+<li>setStartBefore() / setEndBefore() / setStartAfter() / setEndAfter()</li>
+<li>collapse()</li>
+<li>deleteContents() / extractContents()</li>
+<li>cloneRange()</li>
+<li>getBoundingClientRect()</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>各种坑举例</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul>
+<li>浏览器兼容性<ul>
+<li>IE 9-</li>
+<li>IE 9</li>
+<li>IE 10+</li>
+<li>chrome</li>
+<li>safari</li>
+<li>firefox</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<pre><code class="javascript">document.execCommand(&quot;FormatBlock&quot;,false,&#39;&lt;pre&gt;&#39;);
+// 只支持块级元素 (不能使用&lt;code&gt;)
+// IE中不能写成nodename (&#39;pre&#39;)
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>pre 中，chrome/safari换行会生成新的pre</h2>
+<pre><code class="html">&lt;!--期望--&gt;
+&lt;pre&gt;
+    there is a line
+    &lt;br/&gt;
+    another line
+&lt;/pre&gt;
+&lt;!--结果--&gt;
+&lt;pre&gt;there is a line&lt;/pre&gt;
+&lt;pre&gt;another line&lt;/pre&gt;
+</code></pre>
+<p>解决方案:
+监听enter，阻止事件，插入br</p>
+<pre><code>var doc = document;
+dom.addEventListener(&#39;keydown&#39;, function(e){
+    var selection,
+        range,
+        br;
+    if(e.which === 13){ // enter 的键盘码
+      e.preventDefault();
+
+      selection = window.getSelection();
+      range = selection.getRangeAt(0);
+      br = doc.createElement(&#39;br&#39;);
+
+      // 插入空行
+      range.insertNode(br);
+      // 光标移动到 br 后
+      range.setStartAfter(br);
+      range.setEndAfter(br);
+      // 移动光标到下一行
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+});
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>webkit下，初次换行需要按两次回车</h2>
+<p><strong> 原因: dom结构中的最后一个元素为br才能换新行 </strong></p>
+<p><br></p>
+<p style="text-align:left;">解决方案</p>
+<p style="text-align:left;">当Range末尾没有换行符号时，加入两个br，并替换多余的br</p>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>indent 引用</h2>
+<p><strong>document.queryCommandState(&#39;indent&#39;)始终是false</strong></p>
+<p><br></p>
+<p style="text-align:left;">解决方案：</p>
+<p style="text-align:left;">判断是否在 blockquote 中</p>
+
+<p style="text-align:left;"><small>注：老版本chrome/safari 会像pre标签一样，在换行时生成多个blockquote，需要特殊处理</small></p>
+<p style="text-align:left;"><small>注2: 取消引用指令是 outdent</small></p>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>旧版本Ueditor中，输入中文文字的时候会突然消失</h3>
+<pre><code class="javascript">me.addListener( &#39;keydown&#39;, function( type, evt ) {
+        var keyCode = evt.keyCode || evt.which;
+
+        if ( !keys[keyCode] &amp;&amp; !evt.ctrlKey &amp;&amp; !evt.metaKey &amp;&amp; !evt.shiftKey &amp;&amp; !evt.altKey ) {
+
+            if ( me.undoManger.list.length == 0 || ((keyCode == 8 ||keyCode == 46) &amp;&amp; lastKeyCode != keyCode) ) {
+
+                me.undoManger.save(); // 问题出在这里！
+                lastKeyCode = keyCode;
+                return
+
+            }
+            //trace:856
+            //修正第一次输入后，回退，再输入要到keycont&gt;maxInputCount才能在回退的问题
+            if(me.undoManger.list.length == 2 &amp;&amp; me.undoManger.index == 0 &amp;&amp; keycont == 0){
+                me.undoManger.list.splice(1,1);
+                me.undoManger.update();
+            }
+            lastKeyCode = keyCode;
+            keycont++;
+            if ( keycont &gt; maxInputCount ) {
+
+                setTimeout( function() {
+                    me.undoManger.save();
+                }, 0 );
+
+            }
+        }
+    });
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h3>解决方案1：</h3>
+<pre><code class="javascript">//监听是否在输入法状态下
+    var inputType = false;
+    me.addListener(&#39;ready&#39;, function () {
+        domUtils.on(this.body, &#39;compositionstart&#39;, function () {
+            inputType = true;
+        });
+        domUtils.on(this.body, &#39;compositionend&#39;, function () {
+            inputType = false;
+        })
+    });
+</code></pre>
+<h3>解决方案2：修正undo.save方法</h3>
+<pre><code class="javascript">// 此处的select方法内部会调用 Section.prototype.removeAllRanges 的方法
+// 在 webkit 下会导致在输入状态下的输入法所输入的东西丢失
+// getScene 只在 undo/save 中被调用
+range.moveToBookmark( bookmark )/*.select(true)*/;
+</code></pre>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>XSS &amp;&amp; BBCODE</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul>
+<li>XSS注入<ul>
+<li>存储型： 存储在数据库里</li>
+<li>反射型： 没有存储在数据库中</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul>
+<li>成熟解决方案：<ul>
+<li>HTML Purifier (php)</li>
+<li>OWASP AntiSamy (java/.net)</li>
+<li>Java HTML Sanitizer (java)</li>
+<li>JSXSS (node)</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul>
+<li>xss过滤注意事项<ul>
+<li>采用白名单过滤标签/属性(不要采用黑名单)</li>
+<li>防止标签属性越界</li>
+<li>链接特殊处理</li>
+<li>embed 等标签特殊处理</li>
+<li>文件上传</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>BBCode (Bulletin Board Code)</h2>
+<p>轻量级标记语言</p>
+<p>可翻译成html</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">bbcode</th>
+<th style="text-align:left">html</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>[b]bolded text[/b]</code></td>
+<td style="text-align:left"><code>&lt;strong&gt;bolded text&lt;/strong&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>[url]http://example.org[/url]</code></td>
+<td style="text-align:left"><code>&lt;a href=&quot;http://example.org&quot;&gt;http://example.org&lt;/a&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>url=http://example.com]Example[/url]</code></td>
+<td style="text-align:left"><code>&lt;a href=&quot;http://example.com&quot;&gt;Example&lt;/a&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>[quote=&quot;author&quot;]quoted text[/quote]</code></td>
+<td style="text-align:left"><code>&lt;blockquote&gt;&lt;p&gt;quoted text&lt;/p&gt;&lt;/blockquote&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>[style color=#FF0000]Red Text[/style]</code></td>
+<td style="text-align:left"><code>&lt;span style=&quot;color:red;&quot;&gt;Red Text&lt;/span&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>[list][*]Entry 1[*]Entry 2[/list]</code></td>
+<td style="text-align:left"><code>&lt;ul&gt;&lt;li&gt;Entry 1&lt;/li&gt;&lt;li&gt;Entry 2&lt;/li&gt;&lt;/ul&gt;</code></td>
+</tr>
+</tbody>
+</table>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Thanks.</h2>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.2</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'slide',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+<link rel="stylesheet" href="./css/theme.dark.css">
+
+<!--placeholder-->
+</body>
+</html>
