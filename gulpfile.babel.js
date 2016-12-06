@@ -83,12 +83,12 @@ const indexGenerator = (output='index.html') => {
 gulp.task('publish:nodeppt', () => {
     // nodeppt 生成的文件引用路径是固定的
     // 因此这里只支持导入 src 一级目录下的文件
-    gulp.src('src/*.nodeppt.md')
+    return gulp.src('src/*.nodeppt.md')
         .pipe(nodepptPublish('publish/nodeppt'));
 });
 
 gulp.task('publish:remarkjs', () => {
-    gulp.src('src/**/*.remark.md')
+    return gulp.src('src/**/*.remark.md')
         .pipe(remarkjsPublish())
         .pipe(rename({
             extname: '.html'
@@ -97,13 +97,11 @@ gulp.task('publish:remarkjs', () => {
 });
 
 gulp.task('publish:html', () => {
-    gulp.src('src/**/*.@(htm|html)')
+    return gulp.src('src/**/*.@(htm|html)')
         .pipe(gulp.dest('publish'))
 });
 
-gulp.task('publish',['publish:nodeppt','publish:remarkjs','publish:html']);
-
-gulp.task('index', () => {
+gulp.task('publish',['publish:nodeppt','publish:remarkjs','publish:html'], () => {
     gulp.src([
         'publish/**/*.@(htm|html)',
         // 排除 nodeppt 自己生成的目录
@@ -113,9 +111,9 @@ gulp.task('index', () => {
         '!publish/nodeppt/fonts/**',
         // 排除自己
         '!publish/index.html'
-    ]).pipe(indexGenerator())
-    .pipe(gulp.dest('publish'));
+    ])
+        .pipe(indexGenerator())
+        .pipe(gulp.dest('publish'));
 });
-
 
 gulp.task('default',['publish']);
