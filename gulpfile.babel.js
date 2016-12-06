@@ -3,9 +3,10 @@
 import path from 'path';
 import fs from 'fs';
 import gulp from 'gulp';
-import { PluginError } from 'gulp-util';
+import { File, PluginError } from 'gulp-util';
 import rename from 'gulp-rename';
 import through from 'through2';
+import cheerio from 'cheerio';
 
 // nodeppt 还没有 javascript Api, 这里直接使用内部库
 import nodeppt from 'nodeppt/lib/nodePPT';
@@ -26,7 +27,7 @@ const nodepptPublish = (dest,isAll=true) => {
 };
 
 const remarkjsPublish = () => {
-    let tmpl = fs.readFileSync('./templates/remarkjs-template.html').toString();
+    let tmpl = fs.readFileSync('templates/remarkjs-template.html').toString();
     return through.obj(function(file, encoding, callback) {
         if (file.isNull()) {
             return callback(null, file);
@@ -47,6 +48,37 @@ const remarkjsPublish = () => {
     });
 };
 
+const indexGenerator = (output='index.html') => {
+    let tmpl = fs.readFileSync('templates/index.html').toString();
+    let files = [];
+    return through.obj(function(file, encoding, callback) {
+        if (file.isNull()) {
+            return callback(null, file);
+        }
+        if (file.isStream()) {
+            this.emit('error', new PluginError('remarkjsPublish', 'Streams not supported!'));
+        } else if (file.isBuffer()) {
+            let filepath = path.relative(file.base, file.path);
+            let content = file.contents.toString();
+            let $ = cheerio.load(content);
+            files.push({
+                filepath: filepath,
+                title: $('title').text() || $('h1').text()
+            });
+            return callback(null, file);
+        }
+    }, function (callback) {
+        let $ = cheerio.load(tmpl);
+        $('#list').html(
+            files.map(f => `<li><a href=${f.filepath}>${f.title}</a></li>`).join('\n')
+        );
+        this.push(new File({
+            path: path.join(__dirname,output),
+            contents: new Buffer($.html())
+        }));
+        callback();
+    })
+}
 
 gulp.task('publish:nodeppt', () => {
     // nodeppt 生成的文件引用路径是固定的
@@ -70,5 +102,20 @@ gulp.task('publish:html', () => {
 });
 
 gulp.task('publish',['publish:nodeppt','publish:remarkjs','publish:html']);
+
+gulp.task('index', () => {
+    gulp.src([
+        'publish/**/*.@(htm|html)',
+        // 排除 nodeppt 自己生成的目录
+        '!publish/nodeppt/js/**',
+        '!publish/nodeppt/css/**',
+        '!publish/nodeppt/img/**',
+        '!publish/nodeppt/fonts/**',
+        // 排除自己
+        '!publish/index.html'
+    ]).pipe(indexGenerator())
+    .pipe(gulp.dest('publish'));
+});
+
 
 gulp.task('default',['publish']);
