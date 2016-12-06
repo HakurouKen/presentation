@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>演示列表</title>
+
+<style>
+    /*
+    * Based on Cover by http://bootsnipp.com/snippets/featured/full-screen-background-cover-page
+    */
+    html, body {
+        height: 100%;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        text-shadow: 0 1px 3px rgba(0,0,0,.5);
+        font-size: 16px;
+    }
+
+    a, a:focus, a:hover {
+        text-decoration: none;
+        color: #fff;
+    }
+
+    .wrapper {
+        display: table;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+        -moz-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+        box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+    }
+    .wrapper-inner {
+        display: table-cell;
+        vertical-align: top;
+    }
+    .cover-container {
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .inner {
+      padding: 30px;
+    }
+
+    .cover {
+      padding: 0 20px;
+      line-height: 2em;
+    }
+    .list {
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 1.2em;
+    }
+    .list li {
+        list-style-type: none;
+    }
+
+    .footer {
+        color: #999;
+        color: rgba(255,255,255,.5);
+    }
+
+    @media (min-width: 768px) {
+        .list li {
+            text-align: center;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+        }
+        .wrapper-inner {
+            vertical-align: middle;
+        }
+        .footer, .cover-container {
+            width: 100%; /* Must be percentage or pixels for horizontal alignment */
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .list li {
+            text-align: left;
+            padding-left: 5em;
+        }
+        .footer, .cover-container {
+            width: 700px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="wrapper-inner">
+        <div class="cover-container">
+            <div class="inner cover">
+                <h1 class="cover-heading">演示列表</h1>
+                <ul class="list" id="list"></ul>
+            </div>
+            <div class="footer">
+                <div class="inner">
+                    <p><small>部分敏感数据与代码已隐去.</small></p>
+                    <p>
+                        <a href="//github.com/HakurouKen/">© HakurouKen</a> 2014 ~
+                        <script>document.write(new Date().getFullYear())</script>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
